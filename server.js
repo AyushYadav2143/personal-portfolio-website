@@ -34,9 +34,7 @@ app.use(compression());
 ========================================================== */
 
 app.use("/api/v1", apiRoutes);
-app.use(notFound);
 
-app.use(errorHandler);
 
 /* ==========================================================
                       Health Check
@@ -57,6 +55,10 @@ app.get("/", (req, res) => {
 /* ==========================================================
                      Start Server
 ========================================================== */
+/*error Middleware */
+app.use(notFound);
+
+app.use(errorHandler);
 
 async function startServer() {
 
