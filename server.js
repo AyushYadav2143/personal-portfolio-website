@@ -45,8 +45,11 @@ app.get("/", (req, res) => {
     res.json({
 
         success: true,
-
-        message: "🚀 Portfolio Backend Running"
+        name: "Ayush Portfolio Backend",
+        version: "1.0.0",
+        status: "running",
+        docs: "/api/v1",
+        uptime: Math.floor(process.uptime())
 
     });
 
