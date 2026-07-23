@@ -46,13 +46,14 @@ export async function fetchGithubData() {
         );
 
         // ------------------------------------
-        // Fetch pinned repositories (GraphQL)
+        // Fetch pinned repositories + contribution calendar (GraphQL)
         // ------------------------------------
 
         const graphQLQuery = {
             query: `
                 query($login: String!) {
                     user(login: $login) {
+
                         pinnedItems(first: 6, types: REPOSITORY) {
                             nodes {
                                 ... on Repository {
@@ -68,6 +69,31 @@ export async function fetchGithubData() {
                                 }
                             }
                         }
+
+                        contributionsCollection {
+                            contributionCalendar {
+
+                                totalContributions
+
+                                months {
+                                    name
+                                    year
+                                    firstDay
+                                    totalWeeks
+                                }
+
+                                weeks {
+                                    contributionDays {
+                                        contributionCount
+                                        contributionLevel
+                                        date
+                                        weekday
+                                    }
+                                }
+
+                            }
+                        }
+
                     }
                 }
             `,
@@ -97,8 +123,12 @@ export async function fetchGithubData() {
         const profile = profileRes.data;
         const repos = reposRes.data;
 
-        const pinnedRepos =
-            pinnedRes.data.data.user.pinnedItems.nodes;
+        const user = pinnedRes.data.data.user;
+
+        const pinnedRepos = user.pinnedItems.nodes;
+
+        const contributionCalendar =
+            user.contributionsCollection.contributionCalendar;
 
         // ------------------------------------
         // Calculate stats
@@ -162,6 +192,8 @@ export async function fetchGithubData() {
                 url: repo.url
 
             })),
+
+            contributionCalendar,
 
             updatedAt: new Date().toISOString()
 
